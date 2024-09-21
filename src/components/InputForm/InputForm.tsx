@@ -16,24 +16,29 @@ import InputTable from '../TableInterface/InputTable';
 
 
 export type AllDataInput = {
+    id:string
     inputDataSetName:string;
     inputSchemaName:string;
+    inputType:string;
     inputTableName:string;
     inputFileLocation:string;
   }
 
 export type RawBlogPost ={
   id: string;
-  userId: string;
-  title: string;
-  body:string;
+  dataSetName: string;
+  sourceType: string;
+  schemaName:string;
+  tableName:string;
+  directoryFileLocation:string;
 }
 
 
 const InputForm=()=> {
 
-    const [sourceType, setSourceType] = useState<string>('');
+    //const [sourceType, setSourceType] = useState<string>('');
     const [inputDataSetName, setInputDataSetName] = useState<string>('');
+    const [inputSourceType, setInputSourceType]  = useState<string>('');
     const [inputSchemaName, setInputSchemaName] = useState<string>('');
     const [inputTableName, setInputTableName] = useState<string>('');
     const [inputFileLocation, setInputFileLocation] = useState<string>('')
@@ -79,7 +84,7 @@ const InputForm=()=> {
 
       const handleChangeSourceType = (event: SelectChangeEvent) => {
         const value = event.target.value;
-        setSourceType(value);
+        setInputSourceType(value);
         console.log(value)
         if (value === "File_HDFS") {
           setIsVisible(false);
@@ -93,11 +98,24 @@ const InputForm=()=> {
       };
     
       const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
-       e.preventDefault()
        
-       await saveInputData(inputDataSetName,inputSchemaName,inputTableName,inputFileLocation)
+       
+       await saveInputData(inputDataSetName,inputSourceType,inputSchemaName,inputTableName,inputFileLocation)
        console.log("Form is submitted")
-       
+       const fetchData = await fetchInputData()
+       const data = fetchData.map(  rawpost => {
+        return{
+          id:rawpost.id,
+          inputDataSetName: rawpost.dataSetName,
+          inputSchemaName:rawpost.schemaName,
+          inputType:rawpost.sourceType,
+          inputTableName:rawpost.tableName,
+          inputFileLocation:rawpost.directoryFileLocation,
+  
+          
+        }
+      })
+       setRowData(data)
       };
 
 useEffect(()=>{
@@ -105,10 +123,14 @@ useEffect(()=>{
     const fetchData = await fetchInputData() as RawBlogPost[]
     const data = fetchData.map(  rawpost => {
       return{
-        inputDataSetName: rawpost.id,
-        inputSchemaName:rawpost.title,
-        inputTableName:rawpost.userId,
-        inputFileLocation:rawpost.body,
+        id:rawpost.id,
+        inputDataSetName: rawpost.dataSetName,
+        inputSchemaName:rawpost.schemaName,
+        inputType:rawpost.sourceType,
+        inputTableName:rawpost.tableName,
+        inputFileLocation:rawpost.directoryFileLocation,
+
+        
       }
     })
     setRowData(data)
@@ -135,7 +157,7 @@ useEffect(()=>{
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={sourceType}
+                      value={inputSourceType}
                       label="source_type"
                       onChange={handleChangeSourceType}
                     >

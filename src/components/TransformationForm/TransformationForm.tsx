@@ -16,19 +16,21 @@ import InputTable from '../TableInterface/InputTable';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
+import OutlinedInput from '@mui/material/OutlinedInput';
 import FormLabel from '@mui/material/FormLabel';
+import { AllDataInput, RawBlogPost } from '../InputForm/InputForm';
 
 export default function TransformationForm() {
 
-    const [sourceType, setSourceType] = useState<string>('');
+    //const [sourceType, setSourceType] = useState<string>('');
     const [inputDataSetName, setInputDataSetName] = useState<string>('');
+    const [inputSourceType, setInputSourceType]  = useState<string>('');
     const [inputSchemaName, setInputSchemaName] = useState<string>('');
     const [inputTableName, setInputTableName] = useState<string>('');
     const [inputFileLocation, setInputFileLocation] = useState<string>('')
     const [isFileBoxVisible, setIsFileBoxVisible] = useState<boolean>(true);
     const [isVisible, setIsVisible] = useState<boolean>(true);
-  
+    const [rowData,setRowData] = useState<AllDataInput[]>([])
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -38,26 +40,61 @@ export default function TransformationForm() {
     };
 
 
-    const handleChangeSourceType = (event: SelectChangeEvent) => {
-        const value = event.target.value;
-        setSourceType(value);
-        console.log(value)
-        if (value === "File_HDFS") {
-            setIsVisible(false);
-            setIsFileBoxVisible(true)
-        }
-        else {
-            setIsVisible(true);
-            setIsFileBoxVisible(false)
-        }
+    const handleOnClickSourceType = async (e:React.MouseEvent<HTMLElement>) => {
+        
+       
+        
+        const fetchData = await fetchInputData() as RawBlogPost[]
+          const data = fetchData.map(  rawpost => {
+            return{
+              id:rawpost.id,
+              inputDataSetName: rawpost.dataSetName,
+              inputSchemaName:rawpost.schemaName,
+              inputType:rawpost.sourceType,
+              inputTableName:rawpost.tableName,
+              inputFileLocation:rawpost.directoryFileLocation,
+      
+              
+            }
+          })
+          setRowData(data)
 
     };
 
-    const [selectedValue, setSelectedValue] = useState<string>('query');
+    const [selectedValue, setSelectedValue] = React.useState<string[]>([]);
+    const [radioSelectedValue, setRadioSelectedValue] = React.useState('');
+    const handleChangeSourceType = (event: SelectChangeEvent<typeof selectedValue>) => {
+        const {
+            target: { value },
+          } = event;
+          setSelectedValue(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+          );
+      };
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedValue(event.target.value);
+        setRadioSelectedValue(event.target.value);
     };
+
+    useEffect(()=>{
+        async function getInputData(){
+          const fetchData = await fetchInputData() as RawBlogPost[]
+          const data = fetchData.map(  rawpost => {
+            return{
+              id:rawpost.id,
+              inputDataSetName: rawpost.dataSetName,
+              inputSchemaName:rawpost.schemaName,
+              inputType:rawpost.sourceType,
+              inputTableName:rawpost.tableName,
+              inputFileLocation:rawpost.directoryFileLocation,
+            }
+          })
+          setRowData(data)
+          console.log(data)
+        }
+        getInputData()
+      },[])
 
     return (
         <>
@@ -73,21 +110,25 @@ export default function TransformationForm() {
                         <FormControl sx={{
                             width: isSmallScreen ? '100%' : '210px',
                         }} >
-                            <InputLabel id="demo-simple-select-label">Input</InputLabel>
+                            <InputLabel id="label-inputType">Input</InputLabel>
                             <Tooltip title="Select inputs which are used in your sql." arrow placement="right">
 
 
                                 <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={sourceType}
-                                    label="source_type"
+                                    labelId="multi-select-label"
+                                    id="demo-multiple-name"
+                                    multiple
+                                    value={selectedValue}
+                                    label="select-inputType"
                                     onChange={handleChangeSourceType}
+                                    input={<OutlinedInput label="Name" />}
+                                    //onMouseEnter={handleOnClickSourceType}
                                 >
-                                    <MenuItem value="Jdbc_Mysql">mysqlread</MenuItem>
-                                    <MenuItem value="Jdbc_Postgress">postgressread</MenuItem>
-                                    <MenuItem value="Hive">accesstable</MenuItem>
-                                    <MenuItem value="File_HDFS">hdfsanalysispath</MenuItem>
+                                    {rowData.map((item) => (
+          <MenuItem key={item.id} value={item.inputDataSetName}>
+            {item.inputDataSetName}
+          </MenuItem>
+        ))}
                                 </Select></Tooltip>
                         </FormControl>
                     </Grid>
@@ -112,7 +153,7 @@ export default function TransformationForm() {
                                 aria-labelledby="demo-radio-buttons-group-label"
                                 defaultValue="queryType"
                                 name="radio-buttons-group"
-                                value={selectedValue}
+                                value={radioSelectedValue}
                                 onChange={handleRadioChange}
                             >
 
@@ -122,7 +163,7 @@ export default function TransformationForm() {
                             </RadioGroup>
                         </Grid>
                         <Grid size={12}>
-                            {selectedValue === 'query' && (
+                            {radioSelectedValue === 'query' && (
                                 <TextField
                                     label="Enter your query"
                                     variant="outlined"
@@ -135,7 +176,7 @@ export default function TransformationForm() {
                                 />
                             )}
                         </Grid><Grid size={12}>
-                            {selectedValue === 'file' && (
+                            {radioSelectedValue === 'file' && (
                                 <Box sx={{ mt: 2 }}>
                                     <Button
                                         variant="contained"

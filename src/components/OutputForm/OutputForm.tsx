@@ -15,8 +15,9 @@ import InputTable from '../TableInterface/InputTable';
 
 export default function OutputForm() {
     
-    const [sourceType, setSourceType] = useState<string>('');
+    //const [sourceType, setSourceType] = useState<string>('');
     const [inputDataSetName, setInputDataSetName] = useState<string>('');
+    const [inputSourceType, setInputSourceType]  = useState<string>('');
     const [inputSchemaName, setInputSchemaName] = useState<string>('');
     const [inputTableName, setInputTableName] = useState<string>('');
     const [inputFileLocation, setInputFileLocation] = useState<string>('')
@@ -62,7 +63,7 @@ export default function OutputForm() {
 
       const handleChangeSourceType = (event: SelectChangeEvent) => {
         const value = event.target.value;
-        setSourceType(value);
+        setInputSourceType(value);
         console.log(value)
         if (value === "File_HDFS") {
           setIsVisible(false);
@@ -92,7 +93,7 @@ export default function OutputForm() {
       const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
        e.preventDefault()
        
-       await saveInputData(inputDataSetName,inputSchemaName,inputTableName,inputFileLocation)
+       await saveInputData(inputDataSetName,inputSourceType,inputSchemaName,inputTableName,inputFileLocation)
        console.log("Form is submitted")
        
       };
@@ -111,7 +112,7 @@ export default function OutputForm() {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={sourceType}
+                      value={inputSourceType}
                       label="source_type"
                       onChange={handleChangeSourceType}
                     >
