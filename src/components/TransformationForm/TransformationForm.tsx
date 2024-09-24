@@ -11,7 +11,7 @@ import Grid from '@mui/material/Grid2';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useTheme } from '@mui/material/styles';
-import { saveInputData, fetchInputData } from '../../api/DataApi';
+import { saveInputData, fetchInputData, saveTransData } from '../../api/DataApi';
 import InputTable from '../TableInterface/InputTable';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -20,25 +20,40 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import FormLabel from '@mui/material/FormLabel';
 import { AllDataInput, RawBlogPost } from '../InputForm/InputForm';
 
-export default function TransformationForm() {
+export type AllTransData = {
+    id:string
+    transDataSetName:string;
+    transSourceNames:string;
+    transOutputName:string;
+    query:string;
+  }
 
-    //const [sourceType, setSourceType] = useState<string>('');
-    const [inputDataSetName, setInputDataSetName] = useState<string>('');
-    const [inputSourceType, setInputSourceType]  = useState<string>('');
-    const [inputSchemaName, setInputSchemaName] = useState<string>('');
-    const [inputTableName, setInputTableName] = useState<string>('');
-    const [inputFileLocation, setInputFileLocation] = useState<string>('')
-    const [isFileBoxVisible, setIsFileBoxVisible] = useState<boolean>(true);
-    const [isVisible, setIsVisible] = useState<boolean>(true);
-    const [rowData,setRowData] = useState<AllDataInput[]>([])
+export default function TransformationForm() {
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const handleChangeInputDataSet = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInputDataSetName(event.target.value);
+    //const [sourceType, setSourceType] = useState<string>('');
+    const [transDataSetName, setTransDataSetName] = useState<string>('');
+    const [rowData,setRowData] = useState<AllDataInput[]>([])
+    const [transQuery, setTransQuery] = useState<string>('');
+    const [selectedValue, setSelectedValue] = React.useState<string[]>([]);
+    const [radioSelectedValue, setRadioSelectedValue] = React.useState('');
+    const [transOutputDataSetName,setTransOutputDataSetName] =useState<string>('')
+
+    
+
+    const handleChangeTransDataSetName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTransDataSetName(event.target.value);
     };
 
+    const handleChangeTransOutputDataSetName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTransOutputDataSetName(event.target.value);
+    };
+
+    const handleChangeTransQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTransQuery(event.target.value);
+    };
 
     const handleOnClickSourceType = async (e:React.MouseEvent<HTMLElement>) => {
         
@@ -61,14 +76,13 @@ export default function TransformationForm() {
 
     };
 
-    const [selectedValue, setSelectedValue] = React.useState<string[]>([]);
-    const [radioSelectedValue, setRadioSelectedValue] = React.useState('');
+ 
+
     const handleChangeSourceType = (event: SelectChangeEvent<typeof selectedValue>) => {
         const {
             target: { value },
           } = event;
           setSelectedValue(
-            // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
           );
       };
@@ -96,15 +110,40 @@ export default function TransformationForm() {
         getInputData()
       },[])
 
+      const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+        await saveTransData(transDataSetName,"",transOutputDataSetName,transQuery)
+        console.log("Form is submitted")
+        const fetchData = await fetchInputData()
+         
+ 
+        const data = fetchData.map(  rawpost => {
+         return{
+           id:rawpost.id,
+           inputDataSetName: rawpost.dataSetName,
+           inputSchemaName:rawpost.schemaName,
+           inputType:rawpost.sourceType,
+           inputTableName:rawpost.tableName,
+           inputFileLocation:rawpost.directoryFileLocation,
+   
+           
+         }
+       })
+        setRowData(data)
+       
+        
+       };
+
+
+
     return (
         <>
-            <form >
+            <form onSubmit={handleSubmit}>
                 <Grid container rowSpacing={2} spacing={2}>
                     <Grid size={4}>
-                        <TextField id="inputDataSetName"
+                        <TextField id="transDataSetName"
                             label="Transformation Name"
-                            value={inputDataSetName}
-                            onChange={handleChangeInputDataSet} variant="outlined" />
+                            value={transDataSetName}
+                            onChange={handleChangeTransDataSetName} variant="outlined" />
                     </Grid>
                     <Grid size={4}>
                         <FormControl sx={{
@@ -122,7 +161,7 @@ export default function TransformationForm() {
                                     label="select-inputType"
                                     onChange={handleChangeSourceType}
                                     input={<OutlinedInput label="Name" />}
-                                    //onMouseEnter={handleOnClickSourceType}
+                                    onMouseEnter={handleOnClickSourceType}
                                 >
                                     {rowData.map((item) => (
           <MenuItem key={item.id} value={item.inputDataSetName}>
@@ -133,10 +172,10 @@ export default function TransformationForm() {
                         </FormControl>
                     </Grid>
                     <Grid size={4}>
-                        <TextField id="inputDataSetName"
+                        <TextField id="transOutputDataSetName"
                             label="OutputName"
-                            value={inputDataSetName}
-                            onChange={handleChangeInputDataSet} variant="outlined" />
+                            value={transOutputDataSetName}
+                            onChange={handleChangeTransOutputDataSetName} variant="outlined" />
                     </Grid>
 
                     <br />
@@ -167,7 +206,8 @@ export default function TransformationForm() {
                                 <TextField
                                     label="Enter your query"
                                     variant="outlined"
-
+                                    value={transQuery}
+                                    onChange={handleChangeTransQuery}
                                     multiline
                                     rows={4}
                                     sx={{
@@ -175,7 +215,8 @@ export default function TransformationForm() {
                                     }}
                                 />
                             )}
-                        </Grid><Grid size={12}>
+                        </Grid>
+                        <Grid size={12}>
                             {radioSelectedValue === 'file' && (
                                 <Box sx={{ mt: 2 }}>
                                     <Button
@@ -202,13 +243,14 @@ export default function TransformationForm() {
 
                 <Grid container rowSpacing={2} spacing={2}>
                     <Grid>
-                        <Button variant="contained" type='submit'>Save Transformation</Button>
+                        <Button variant="contained" type='submit' >Save Transformation</Button>
                     </Grid>
                     <Grid size={12}>
 
                     </Grid>
 
-                </Grid></form>
+                </Grid>
+                </form>
             <Grid container rowSpacing={2} spacing={2}>
                 <Grid size={12}>
 

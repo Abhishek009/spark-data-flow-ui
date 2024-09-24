@@ -5,7 +5,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
-import { Box, Container, TextField, InputLabel, MenuItem, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, Container, TextField, InputLabel, MenuItem, Tooltip, useMediaQuery, Modal } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -33,9 +33,13 @@ export type RawBlogPost ={
   directoryFileLocation:string;
 }
 
+// interface Props {
+//   open:boolean;
+//   onClose: () => void;
+// }
 
-const InputForm=()=> {
-
+{/* const InputForm=( {open, onClose } : Props)=> { */}
+  const InputForm=()=> {
     //const [sourceType, setSourceType] = useState<string>('');
     const [inputDataSetName, setInputDataSetName] = useState<string>('');
     const [inputSourceType, setInputSourceType]  = useState<string>('');
@@ -44,15 +48,8 @@ const InputForm=()=> {
     const [inputFileLocation, setInputFileLocation] = useState<string>('')
     const [isFileBoxVisible, setIsFileBoxVisible] = useState<boolean>(true);
     const [isVisible, setIsVisible] = useState<boolean>(true);
-    //const [allDataInput,setAllDataInput] = useState<AllDataInput>();
     const [rowData,setRowData] = useState<AllDataInput[]>([])
 
-    //const [allDataInput, setAllDataInput] = useState({
-    //    inputDataSetName:'',
-    //    inputSchemaName:'',
-    //    inputTableName:'',
-    //    inputFileLocation:''
-    //  });
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -73,13 +70,6 @@ const InputForm=()=> {
         setInputFileLocation(event.target.value);
       };
     
-    // Code can be used to get data from the fields  
-    //  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //    setAllDataInput({
-    //      ...allDataInput,
-    //      [e.target.name]: e.target.value
-    //    });
-    //  };
 
 
       const handleChangeSourceType = (event: SelectChangeEvent) => {
@@ -103,6 +93,8 @@ const InputForm=()=> {
        await saveInputData(inputDataSetName,inputSourceType,inputSchemaName,inputTableName,inputFileLocation)
        console.log("Form is submitted")
        const fetchData = await fetchInputData()
+        
+
        const data = fetchData.map(  rawpost => {
         return{
           id:rawpost.id,
@@ -141,6 +133,10 @@ useEffect(()=>{
 
     return(
 <>
+{/* 
+<Modal open={open} onClose={() => onClose()}>
+
+<div>*/}
 <form onSubmit={handleSubmit}>
 <Grid container rowSpacing={2} spacing={2}>
                 <Grid size={4}>
@@ -161,8 +157,8 @@ useEffect(()=>{
                       label="source_type"
                       onChange={handleChangeSourceType}
                     >
-                      <MenuItem value="Jdbc_Mysql">Jdbc_Mysql</MenuItem>
-                      <MenuItem value="Jdbc_Postgress">Jdbc_Postgress</MenuItem>
+                      {/* <MenuItem value="Jdbc_Mysql">Jdbc_Mysql</MenuItem>
+                      <MenuItem value="Jdbc_Postgress">Jdbc_Postgress</MenuItem> */}
                       <MenuItem value="Hive">Hive</MenuItem>
                       <MenuItem value="File_HDFS">File_HDFS</MenuItem>
                     </Select>
@@ -215,6 +211,8 @@ useEffect(()=>{
                 </Grid>
 
               </Grid>
+             {/*  </div>
+</Modal> */}
 </>
     );
 }

@@ -116,8 +116,8 @@ export default function OutputForm() {
                       label="source_type"
                       onChange={handleChangeSourceType}
                     >
-                      <MenuItem value="Jdbc_Mysql">mysql_trans</MenuItem>
-                      <MenuItem value="Jdbc_Postgress">postgress_trans</MenuItem>
+                      {/* <MenuItem value="Jdbc_Mysql">mysql_trans</MenuItem>
+                      <MenuItem value="Jdbc_Postgress">postgress_trans</MenuItem> */}
                       <MenuItem value="Hive">hive_trans</MenuItem>
                       <MenuItem value="File_HDFS">file_trans</MenuItem>
                     </Select>
@@ -135,8 +135,8 @@ export default function OutputForm() {
                       label="source_type"
                       onChange={handleChangeOutputType}
                     >
-                      <MenuItem value="Jdbc_Mysql">Jdbc_Mysql</MenuItem>
-                      <MenuItem value="Jdbc_Postgress">Jdbc_Postgress</MenuItem>
+                      {/* <MenuItem value="Jdbc_Mysql">Jdbc_Mysql</MenuItem>
+                      <MenuItem value="Jdbc_Postgress">Jdbc_Postgress</MenuItem> */}
                       <MenuItem value="Hive">Hive</MenuItem>
                       <MenuItem value="File_HDFS">File_HDFS</MenuItem>
                     </Select>

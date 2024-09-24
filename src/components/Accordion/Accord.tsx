@@ -21,12 +21,23 @@ import OutputForm from '../OutputForm/OutputForm';
 
 export default function Accord() {
 
+const [inputFormOpen,setInputFormOpen] = useState(false)
+
+const handleInputFormOpen=()=>{
+  setInputFormOpen(true)
+}
+
+const handleInputFormClose=()=>{
+  setInputFormOpen(false)
+}
+
   return (
     <div>
 
 
       <Container maxWidth="lg">
         <Box sx={{ height: '100vh' }} >
+       
           <Accordion defaultExpanded>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -36,8 +47,9 @@ export default function Accord() {
               Input
             </AccordionSummary>
             <AccordionDetails>
-              <InputForm/>
-
+            {/* <Button variant='contained' onClick={handleInputFormOpen}>Add Options</Button> 
+            <InputForm open={inputFormOpen} onClose={handleInputFormClose} />*/}
+            <InputForm/>
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
@@ -59,18 +71,20 @@ export default function Accord() {
               id="panel3-header"
             >
               Output
+              
             </AccordionSummary>
             <AccordionDetails>
               <OutputForm></OutputForm>
             </AccordionDetails>
             
           </Accordion>
-
+          
 
 
         </Box>
+        
       </Container>
-
+      
 
     </div>
   );

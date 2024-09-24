@@ -29,6 +29,30 @@ export const saveInputData =  async(inputDataSetName:String,inputSourceType:Stri
     }
 };
 
+export const saveTransData =  async(transDataSetName:String,transSourceNames:String,transOutputName:String,query:String ): Promise<void> => {
+
+    const config: AxiosRequestConfig = {
+        headers: {
+          'Accept': 'application/json',
+        } as RawAxiosRequestHeaders,
+      };
+
+    try{
+        const data = {
+            "transDataSetName": transDataSetName,
+            "transSourceNames": transSourceNames,
+            "transOutputName": transOutputName,
+            "query": query
+        
+        };
+        const response = await client.put("/addTransform",data,config)
+    }catch(error) {
+        console.error('Error in saving interface',error);
+        throw error;
+    }
+};
+
+
 export const fetchInputData =  async(): Promise<RawBlogPost[]> => {
     try{
         const response = await client.get("/users")
