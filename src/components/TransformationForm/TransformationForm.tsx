@@ -18,15 +18,10 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormLabel from '@mui/material/FormLabel';
-import { AllDataInput, RawBlogPost } from '../InputForm/InputForm';
 
-export type AllTransData = {
-    id:string
-    transDataSetName:string;
-    transSourceNames:string;
-    transOutputName:string;
-    query:string;
-  }
+import { DataSet , AllDataInput } from '../../api/DataModels';
+
+
 
 export default function TransformationForm() {
 
@@ -59,13 +54,13 @@ export default function TransformationForm() {
         
        
         
-        const fetchData = await fetchInputData() as RawBlogPost[]
+        const fetchData = await fetchInputData() as DataSet[]
           const data = fetchData.map(  rawpost => {
             return{
               id:rawpost.id,
               inputDataSetName: rawpost.dataSetName,
               inputSchemaName:rawpost.schemaName,
-              inputType:rawpost.sourceType,
+              inputType:rawpost.dataSetType,
               inputTableName:rawpost.tableName,
               inputFileLocation:rawpost.directoryFileLocation,
       
@@ -93,13 +88,13 @@ export default function TransformationForm() {
 
     useEffect(()=>{
         async function getInputData(){
-          const fetchData = await fetchInputData() as RawBlogPost[]
+          const fetchData = await fetchInputData() as DataSet[]
           const data = fetchData.map(  rawpost => {
             return{
               id:rawpost.id,
               inputDataSetName: rawpost.dataSetName,
               inputSchemaName:rawpost.schemaName,
-              inputType:rawpost.sourceType,
+              inputType:rawpost.dataSetType,
               inputTableName:rawpost.tableName,
               inputFileLocation:rawpost.directoryFileLocation,
             }
@@ -121,7 +116,7 @@ export default function TransformationForm() {
            id:rawpost.id,
            inputDataSetName: rawpost.dataSetName,
            inputSchemaName:rawpost.schemaName,
-           inputType:rawpost.sourceType,
+           inputType:rawpost.dataSetType,
            inputTableName:rawpost.tableName,
            inputFileLocation:rawpost.directoryFileLocation,
    

@@ -12,11 +12,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const pages = ['Home', 'Jobs'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const NavBar = () => {
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -34,6 +36,17 @@ const NavBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleJobsNavMenu = (event: React.MouseEvent<HTMLElement>) =>{
+navigate("/jobs")
+  }
+
+  const handleFlowNavMenu = (event: React.MouseEvent<HTMLElement>) =>{
+    navigate("/flow")
+      }
+  const handleHomeNavMenu = (event: React.MouseEvent<HTMLElement>) =>{
+    navigate("/dashboard")
+      }
 
   return (
     <AppBar position="static">
@@ -85,11 +98,14 @@ const NavBar = () => {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {pages.map((page) => (
+              {/* {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
-              ))}
+              ))} */}
+              <MenuItem key="jobs" onClick={handleJobsNavMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>Jobs</Typography>
+                </MenuItem>
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -112,7 +128,7 @@ const NavBar = () => {
             SDF
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {/* {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
@@ -120,7 +136,28 @@ const NavBar = () => {
               >
                 {page}
               </Button>
-            ))}
+            ))} */}
+             <Button
+                key="home"
+                onClick={handleHomeNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Home
+              </Button>
+            <Button
+                key="jobs"
+                onClick={handleJobsNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Jobs
+              </Button>
+              <Button
+                key="flow"
+                onClick={handleFlowNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Flow
+              </Button>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

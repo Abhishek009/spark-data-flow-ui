@@ -12,26 +12,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useTheme } from '@mui/material/styles';
 import { saveInputData , fetchInputData } from '../../api/DataApi';
 import InputTable from '../TableInterface/InputTable';
+import { DataSet , AllDataInput } from '../../api/DataModels';
 
 
 
-export type AllDataInput = {
-    id:string
-    inputDataSetName:string;
-    inputSchemaName:string;
-    inputType:string;
-    inputTableName:string;
-    inputFileLocation:string;
-  }
-
-export type RawBlogPost ={
-  id: string;
-  dataSetName: string;
-  sourceType: string;
-  schemaName:string;
-  tableName:string;
-  directoryFileLocation:string;
-}
 
 // interface Props {
 //   open:boolean;
@@ -100,7 +84,7 @@ export type RawBlogPost ={
           id:rawpost.id,
           inputDataSetName: rawpost.dataSetName,
           inputSchemaName:rawpost.schemaName,
-          inputType:rawpost.sourceType,
+          inputType:rawpost.dataSetType,
           inputTableName:rawpost.tableName,
           inputFileLocation:rawpost.directoryFileLocation,
   
@@ -112,13 +96,13 @@ export type RawBlogPost ={
 
 useEffect(()=>{
   async function getInputData(){
-    const fetchData = await fetchInputData() as RawBlogPost[]
+    const fetchData = await fetchInputData() as DataSet[]
     const data = fetchData.map(  rawpost => {
       return{
         id:rawpost.id,
         inputDataSetName: rawpost.dataSetName,
         inputSchemaName:rawpost.schemaName,
-        inputType:rawpost.sourceType,
+        inputType:rawpost.dataSetType,
         inputTableName:rawpost.tableName,
         inputFileLocation:rawpost.directoryFileLocation,
 

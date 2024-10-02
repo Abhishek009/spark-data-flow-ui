@@ -5,7 +5,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { AllDataInput,RawBlogPost } from '../InputForm/InputForm';
+import { DataSet , AllDataInput } from '../../api/DataModels';
 import { TableFooter, TablePagination } from '@mui/material';
 
 import { useMediaQuery, useTheme } from '@mui/material';
