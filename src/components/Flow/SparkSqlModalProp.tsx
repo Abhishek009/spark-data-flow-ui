@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid2';
 import { saveInputData, fetchInputData,saveSparkSqlInputData } from '../../api/DataApi';
-import { DataSet, AllDataInput,SparkSqlInputData } from '../../api/DataModels';
+import { DataSet, AllDataInput,SparkSqlInputData, FlowMapping } from '../../api/DataModels';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Modal, Box, TextField, Button, Typography, MenuItem, Link, IconButton, Divider, CircularProgress } from '@mui/material';
@@ -17,7 +17,7 @@ interface SparkSqlModalProps {
 const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleSubmit }) => {
 
 
-    const [inputNames, setInputNames] = useState<DataSet[]>([]);
+    const [inputNames, setInputNames] = useState<FlowMapping[]>([]);
     // const [selectedInputName, setSelectedInputName] = useState('');
     const [selectedInputNames, setSelectedInputNames] = useState<string[]>(['']);
     const [selectedInputId, setSelectedInputId] = useState<string[]>(['']);
@@ -34,7 +34,7 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
             try {
                 //const response = await axios.get('http://localhost:5000/api/input-names'); // Adjust the endpoint as needed
                 const response = await fetchInputData()
-
+                console.log("fetch input names for spark sql",response)
                 setInputNames(response);
 
 
@@ -147,7 +147,7 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
                                 >
                                     {inputNames.map((name) => (
                                         <MenuItem key={name.id} id={name.id} value={name.id}>
-                                            {name.dataSetName}
+                                            {name.inputDatasetName}
                                         </MenuItem>
                                     ))}
                                 </TextField>

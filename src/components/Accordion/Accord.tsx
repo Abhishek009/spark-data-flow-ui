@@ -11,9 +11,9 @@ import Grid from '@mui/material/Grid2';
 
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import InputForm from '../InputForm/InputForm';
-import TransformationForm from '../TransformationForm/TransformationForm';
-import OutputForm from '../OutputForm/OutputForm';
+//import InputForm from '../InputForm/InputForm';
+//import TransformationForm from '../TransformationForm/TransformationForm';
+//import OutputForm from '../OutputForm/OutputForm';
 
 
 
@@ -49,7 +49,7 @@ const handleInputFormClose=()=>{
             <AccordionDetails>
             {/* <Button variant='contained' onClick={handleInputFormOpen}>Add Options</Button> 
             <InputForm open={inputFormOpen} onClose={handleInputFormClose} />*/}
-            <InputForm/>
+            {/* <InputForm/> */}
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
@@ -61,7 +61,7 @@ const handleInputFormClose=()=>{
               Transformation
             </AccordionSummary>
             <AccordionDetails>
-              <TransformationForm/>
+              {/* <TransformationForm/> */}
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
@@ -74,7 +74,7 @@ const handleInputFormClose=()=>{
               
             </AccordionSummary>
             <AccordionDetails>
-              <OutputForm></OutputForm>
+              {/* <OutputForm></OutputForm> */}
             </AccordionDetails>
             
           </Accordion>

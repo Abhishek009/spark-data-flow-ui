@@ -7,22 +7,28 @@ import Box from '@mui/material/Box';
 import AddDatasetModal from './AddDatasetModal';
 import { saveInputData , fetchInputData,saveSparkSqlInputData } from '../../api/DataApi';
 import SparkSqlModal from './SparkSqlModalProp';
-import { SparkSqlInputData } from '../../api/DataModels';
+import { SparkSqlInputData,FlowMapping } from '../../api/DataModels';
 
 
 const getNodeId = () => `${String(+new Date()).slice(6)}`;
-const initialNodes = [
-  { id: '1', data: { label: 'Node 1' }, position: { x: 100, y: 100 } },
-  { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 200 } },
-  { id: '3', data: { label: 'Node 3' }, position: { x: 100, y: 300 } },
-];
+ const initialNodes:{
+  id: string;
+  data: {
+      label: string;
+  };
+  position: {
+      x: number;
+      y: number;
+  };
+}[] = [];
 
-const initialEdges = [
-  { id: 'e1->3', source: '1', target: '3' },
-  { id: 'e2->3', source: '2', target: '3' }
-];
+ const initialEdges:{
+  id: string;
+  source: string;
+  target: string;
+}[] = [];
 
-const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
+const defaultViewport = { x: 0, y: 0, zoom: .5 };
 
 const UpdateNode = () => {
   const [loading, setLoading] = useState(false);
@@ -39,17 +45,19 @@ const UpdateNode = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
 
-  const [nodeName, setNodeName] = useState('Node 1');
+  //const [nodeName, setNodeName] = useState('Node 1');
 //  const [nodeBg, setNodeBg] = useState('#eee');
 //  const [nodeHidden, setNodeHidden] = useState(false);
+
+const addNode = (node: any) => {
+  setNodes((nds) => [...nds, node]);
+};
 
 const addEdge = (edge: any) => {
   setEdges((eds) => [...eds, edge]);
 };
 
-const addNode = (node: any) => {
-  setNodes((nds) => [...nds, node]);
-};
+
 
   const handleAddDataset = useCallback(async (
     datasetName: string,
@@ -66,17 +74,9 @@ const addNode = (node: any) => {
           const id = getNodeId();
           addNode({
             id: id,
-            data: { label: dataset.dataSetName },
+            data: { label: dataset.inputDatasetName },
             position: { x: Math.random() * 400, y: Math.random() * 400 }, // Random position for example
           });
-          // const id = getNodeId();
-          // const addNode = {
-          //   id: id,
-          //   data: { label: dataset.dataSetName }, // Assuming each dataset has a dataSetName property
-          //   position: { x: Math.random() * 100, y: Math.random() * 100 }, // Random position for example
-          // };
-          // console.log(dataset.id+"==="+dataset.dataSetName)
-          // setNodes((nds) => [...nds, addNode]);
         });
       
         handleCloseAddDataset();
@@ -95,12 +95,36 @@ const addNode = (node: any) => {
       
 
       const newNodes = newDataset.map((node) => ({
-        id:   node.id.toString(),
-        data: { label: node.dataSetName },
+        id:   node.inputDataId.toString(),
+        data: { label: node.inputDatasetName },
         position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
       }));
       setNodes((nds) => [...nds, ...newNodes]);
-      console.log('Set Nodes:', newNodes); // Debugging line
+      
+      
+      const newNodes2 = newDataset.map((node) => ({
+        id:   node.outputDatasetId.toString(),
+        data: { label: node.outputDatasetName },
+        position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
+      }));
+
+      newNodes2.map((node) => {
+        if(node.id != "out_"){
+          addNode(node)
+        }
+      })
+      console.log('Set Nodes1:', newNodes); 
+      console.log('Set Nodes2:', newNodes2); 
+
+      const edges = newDataset.map((node) => ({
+        id : `e${node.inputDataId}->${node.outputDatasetId}`,
+        source : node.inputDataId.toString(),
+        target : node.outputDatasetId.toString()
+      }))
+      console.log('Set Edges :', edges);
+
+      setEdges((eds) => [...eds,...edges])
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }

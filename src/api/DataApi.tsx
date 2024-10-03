@@ -1,6 +1,6 @@
 
 
-import { DataSet, AllDataInput,SparkSqlInputData } from './DataModels'
+import { DataSet, AllDataInput,SparkSqlInputData,FlowMapping } from './DataModels'
 import axios, { AxiosResponse, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 
 const client = axios.create({
@@ -73,7 +73,7 @@ export const saveSparkSqlInputData =  async(sparkSqlInputData:SparkSqlInputData 
     }
 };
 
-export const fetchInputData =  async(): Promise<DataSet[]> => {
+export const fetchInputData =  async(): Promise<FlowMapping[]> => {
     try{
         const response = await client.get("/allinputdataset")
         console.log("In Api Call",response.data)

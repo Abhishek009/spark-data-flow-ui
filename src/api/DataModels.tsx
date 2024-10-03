@@ -32,3 +32,11 @@ export type AllTransData = {
     tableName: string;
     schemaName: string;
   }
+
+  export type FlowMapping = {
+    id:string;
+    inputDataId: string[];
+    inputDatasetName: string;
+    outputDatasetId: string;
+    outputDatasetName: string;
+  }
