@@ -12,9 +12,11 @@ interface SparkSqlModalProps {
     open: boolean;
     handleClose: () => void;
     handleSubmit: (inputDataForSparkSql:SparkSqlInputData) => void;
+    inputNamesForSparkSql: FlowMapping[];
+    distinctOutputNamesForSparkSql: FlowMapping[];
 }
 
-const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleSubmit }) => {
+const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleSubmit,inputNamesForSparkSql,distinctOutputNamesForSparkSql }) => {
 
 
     const [inputNames, setInputNames] = useState<FlowMapping[]>([]);
@@ -33,10 +35,13 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
             setLoading(true);
             try {
                 //const response = await axios.get('http://localhost:5000/api/input-names'); // Adjust the endpoint as needed
-                const response = await fetchInputData()
-                console.log("fetch input names for spark sql",response)
-                setInputNames(response);
-
+                inputNamesForSparkSql = await fetchInputData()
+                console.log("=====Fetch input names from SparkSqlModalfor spark sql",inputNamesForSparkSql)
+                const distinctData = Array.from(new Set(inputNamesForSparkSql.map(item => item.inputDataId)))
+                .map(id => inputNamesForSparkSql.find(item => item.inputDataId === id)).filter((item): item is FlowMapping => item !== undefined);
+                console.log("=====Fetch input names from SparkSqlModal with distinctData",distinctData)
+                inputNamesForSparkSql=distinctData;
+                console.log("=====Fetch input names from SparkSqlModal with distinctOutputNamesForSparkSql",distinctOutputNamesForSparkSql)
 
             } catch (error) {
                 setError('Error fetching input names');
@@ -67,7 +72,7 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
         setSelectedInputNames(newSelectedInputNames);
     };
 
-    const onSubmit = () => {
+    const onSubmit = async() => {
         if (!outputDataset || !format || !tableName || !schemaName || selectedInputNames.some(name => !name)) {
             setError('Please fill in all fields');
             return;
@@ -75,14 +80,17 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
         setLoading(true);
         setError(null);
         try {
+            const response = await saveInputData(outputDataset, format, schemaName, tableName, "");
+            console.log("==================",response)
             let inputOutputData:SparkSqlInputData = {
+            id: response.id,
             selectedInputNames:selectedInputNames,
             outputDataset:outputDataset,
             format:format,
             tableName:tableName,
             schemaName:schemaName};
             handleSubmit(inputOutputData)
-
+            
             
             console.log({
                 selectedInputNames,
@@ -145,11 +153,13 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
                                     value={inputName}
                                     onChange={(e) => handleInputNameChange(index, e.target.value,e.target.id)}
                                 >
-                                    {inputNames.map((name) => (
-                                        <MenuItem key={name.id} id={name.id} value={name.id}>
+                                    {inputNamesForSparkSql.map((name) => (
+                                        <MenuItem key={name.inputDataId} id={name.inputDataId} value={name.inputDataId}>
                                             {name.inputDatasetName}
                                         </MenuItem>
                                     ))}
+                                    
+                                    
                                 </TextField>
                                 <IconButton onClick={() => handleRemoveInputName(index)} disabled={selectedInputNames.length === 1}>
                                     <RemoveIcon />

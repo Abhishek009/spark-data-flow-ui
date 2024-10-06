@@ -25,7 +25,7 @@ export type AllTransData = {
   }
 
   export type SparkSqlInputData = {
-    //inputDatasetId:string;
+    id:string;
     selectedInputNames: string[];
     outputDataset: string;
     format: string;
@@ -35,7 +35,7 @@ export type AllTransData = {
 
   export type FlowMapping = {
     id:string;
-    inputDataId: string[];
+    inputDataId: string;
     inputDatasetName: string;
     outputDatasetId: string;
     outputDatasetName: string;

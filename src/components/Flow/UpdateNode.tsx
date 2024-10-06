@@ -8,6 +8,7 @@ import AddDatasetModal from './AddDatasetModal';
 import { saveInputData , fetchInputData,saveSparkSqlInputData } from '../../api/DataApi';
 import SparkSqlModal from './SparkSqlModalProp';
 import { SparkSqlInputData,FlowMapping } from '../../api/DataModels';
+import SideDrawer from './SideDrawer';
 
 
 const getNodeId = () => `${String(+new Date()).slice(6)}`;
@@ -35,19 +36,30 @@ const UpdateNode = () => {
   const [error, setError] = useState<string | null>(null);
   const [openAddDataset, setOpenAddDataset] = useState(false);
   const [openSparkSql, setOpenSparkSql] = useState(false);
+  const [openSideDrawer,setOpenSideDrawer] = useState(false)
+
   const handleOpenAddDataset = () => setOpenAddDataset(true);
   const handleCloseAddDataset = () => setOpenAddDataset(false);
+  const [inputNames, setInputNames] = useState<FlowMapping[]>([]);
+  const [distinctOutputNames, setdistinctOutputNames] = useState<FlowMapping[]>([]);
 
-  const handleOpenSparkSql = () => setOpenSparkSql(true);
+  const handleOpenSparkSql = () => {
+    fetchInputNames()
+    setOpenSparkSql(true);
+  }
   const handleCloseSparkSql = () => setOpenSparkSql(false);
+
+
+
+  const handleDrawerClose = () => {
+    console.log("Close is called")
+    setOpenSideDrawer(false);
+  };
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodeBg, setNodeBg] = useState('#eee');
 
-
-  //const [nodeName, setNodeName] = useState('Node 1');
-//  const [nodeBg, setNodeBg] = useState('#eee');
-//  const [nodeHidden, setNodeHidden] = useState(false);
 
 const addNode = (node: any) => {
   setNodes((nds) => [...nds, node]);
@@ -57,6 +69,30 @@ const addEdge = (edge: any) => {
   setEdges((eds) => [...eds, edge]);
 };
 
+const fetchInputNames = async () => {
+  setLoading(true);
+  try {
+    console.log("Inside FetchInputNamed from UpdateNode");
+      const response = await fetchInputData()
+      console.log("Fetch input names from UpdateNode",response)
+
+      const distinctInuputDataNode = Array.from(new Set(response.map(item => item.inputDataId)))
+      .map(id => response.find(item => item.inputDataId === id)).filter((item): item is FlowMapping => item !== undefined);
+
+      const distinctOutputDataNode = Array.from(new Set(response.map(item => item.outputDatasetId)))
+     .map(id => response.find(item => item.outputDatasetId === id)).filter((item): item is FlowMapping => item !== undefined);
+     console.log("Fetch input names from UpdateNode with distinctData",distinctInuputDataNode)
+     console.log("Fetch input names from UpdateNode with distinctOutputDataNode",distinctOutputDataNode)
+      setInputNames(distinctInuputDataNode);
+      setdistinctOutputNames(distinctOutputDataNode)
+
+  } catch (error) {
+      setError('Error fetching input names');
+      console.error('Error fetching input names:', error);
+    } finally {
+      setLoading(false);
+    }
+};
 
 
   const handleAddDataset = useCallback(async (
@@ -72,10 +108,12 @@ const addEdge = (edge: any) => {
       
         newDataset.forEach((dataset) => {
           const id = getNodeId();
+          //const backgroundColor = dataset.inputDatasetName === 'sdf_dataset_1' ? '#eee' : '#D3D3D3'; 
           addNode({
             id: id,
             data: { label: dataset.inputDatasetName },
             position: { x: Math.random() * 400, y: Math.random() * 400 }, // Random position for example
+           
           });
         });
       
@@ -98,6 +136,7 @@ const addEdge = (edge: any) => {
         id:   node.inputDataId.toString(),
         data: { label: node.inputDatasetName },
         position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
+        
       }));
       setNodes((nds) => [...nds, ...newNodes]);
       
@@ -109,7 +148,7 @@ const addEdge = (edge: any) => {
       }));
 
       newNodes2.map((node) => {
-        if(node.id != "out_"){
+        if(node.id != "0"){
           addNode(node)
         }
       })
@@ -117,13 +156,20 @@ const addEdge = (edge: any) => {
       console.log('Set Nodes2:', newNodes2); 
 
       const edges = newDataset.map((node) => ({
+        
         id : `e${node.inputDataId}->${node.outputDatasetId}`,
         source : node.inputDataId.toString(),
         target : node.outputDatasetId.toString()
       }))
       console.log('Set Edges :', edges);
 
-      setEdges((eds) => [...eds,...edges])
+      edges.map((node) => {
+        if(node.target != "0" ){
+          addEdge(node)
+        }
+      })
+      
+      //setEdges((eds) => [...eds,...edges])
 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -162,12 +208,16 @@ const addEdge = (edge: any) => {
     }
   };
 
-
+const onNodeClick = (event: React.MouseEvent<HTMLDivElement>,node: Node) => {
+  console.log("Node Click Called")
+  console.log(node)
+  setOpenSideDrawer(true)
+  
+}
 
 const handleRun = () => {
     console.log('Run button clicked');
 };
-
 
   return (
     <ReactFlow
@@ -175,9 +225,11 @@ const handleRun = () => {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      onNodeDoubleClick={onNodeClick}
       defaultViewport={defaultViewport}
-      minZoom={0.2}
-      maxZoom={4}
+      //minZoom={0.2}
+      //maxZoom={4}
+      
       attributionPosition="bottom-left"
       fitView
       fitViewOptions={{ padding: 0.5 }}
@@ -220,7 +272,9 @@ const handleRun = () => {
 
             
             <AddDatasetModal open={openAddDataset} handleClose={handleCloseAddDataset} handleAddDataset={handleAddDataset} />
-            <SparkSqlModal open={openSparkSql} handleClose={handleCloseSparkSql} handleSubmit={handleSparkSqlSubmit} />
+            <SparkSqlModal open={openSparkSql} handleClose={handleCloseSparkSql} handleSubmit={handleSparkSqlSubmit} inputNamesForSparkSql={inputNames} 
+            distinctOutputNamesForSparkSql={distinctOutputNames}/>
+            <SideDrawer open={openSideDrawer} onClose={handleDrawerClose}/>
         </Box>
       </div>
     </ReactFlow>
