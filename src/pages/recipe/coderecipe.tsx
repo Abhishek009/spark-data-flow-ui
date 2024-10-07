@@ -3,15 +3,15 @@ import NavBar from "../../components/NavBar/NavBar";
 
 
 
-const recipe =() => {
+const coderecipe = () => {
 
     return(
         <>
          <NavBar></NavBar> 
-        
+          In recipe page
         </>
     )
 
 }
 
-export default recipe
+export default  coderecipe;

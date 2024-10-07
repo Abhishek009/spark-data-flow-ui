@@ -40,5 +40,5 @@ export type AllTransData = {
     inputDatasetName: string;
     outputDatasetId: string;
     outputDatasetName: string;
-    datatsetType: String
+    datasetType: string
   }

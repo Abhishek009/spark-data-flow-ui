@@ -6,7 +6,8 @@ import Login from './pages/login/login';
 import Dashboard from './pages/dashboard/dashboard';
 import Jobs from './pages/jobs/jobs';
 import Flow from './pages/flow/flow';
-import Recipe from './pages/recipe/recipe';
+import CodeRecipe from './pages/recipe/coderecipe';
+import DataRecipe from './pages/recipe/coderecipe';
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/jobs" element={<Jobs/>}/>
         <Route path="/flow" element={<Flow/>}/>
-        <Route path="/recipe" element={<Recipe/>}/>
+        <Route path="/coderecipe" element={<CodeRecipe/>}/>
+        <Route path="/datarecipe" element={<DataRecipe/>}/>
         </Routes>
 
         </HashRouter>

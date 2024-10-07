@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ReactFlow, useNodesState, useEdgesState } from '@xyflow/react';
+import { ReactFlow, useNodesState, useEdgesState, Handle } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import Button from '@mui/material/Button';
 import './UpdateNode.css';
@@ -13,10 +13,12 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 
 const getNodeId = () => `${String(+new Date()).slice(6)}`;
+
  const initialNodes:{
   id: string;
   data: {
-      label: string;
+      label: string,
+      nodeType: string,
   };
   position: {
       x: number;
@@ -114,11 +116,12 @@ const fetchInputNames = async () => {
     
         newDataset.forEach((dataset) => {
           const id = getNodeId();
-          const backgroundColor = dataset.datatsetType === 'input' ? '#eee' : '#eee'; 
+          const backgroundColor = dataset.datasetType === 'input' ? '#eee' : '#eee'; 
           console.log(backgroundColor)
           addNode({
             id: id,
-            data: { label: dataset.inputDatasetName },
+            data: { label: dataset.inputDatasetName},
+            type: 'default',
             position: { x: Math.random() * 400, y: Math.random() * 400 }, // Random position for example
             style: { backgroundColor },
           });
@@ -139,30 +142,32 @@ const fetchInputNames = async () => {
       console.log('Fetched Nodes:', newDataset); 
       
 
-      const newNodes = newDataset.map((node) => 
+      const newNodes = newDataset.map((node1) => 
          ({
-        id:   node.inputDataId.toString(),
-        data: { label: node.inputDatasetName },
+        id:   node1.inputDataId.toString(),
+        type: 'default',
+        data: { label: node1.inputDatasetName , nodeType: node1.datasetType },
         position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
         
       }));
       setNodes((nds) => [...nds, ...newNodes]);
       
       
-      const newNodes2 = newDataset.map((node) => ({
-        id:   node.outputDatasetId.toString(),
-        data: { label: node.outputDatasetName },
-        position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
-      }));
+      // const newNodes2 = newDataset.map((node2) => ({
+      //   id:   node2.outputDatasetId.toString(),
+      //   type: 'default',
+      //   data: { label: node2.datasetType , nodeType: node2.outputDatasetName },
+      //   position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
+      // }));
 
-      newNodes2.map((node) => {
-        if(node.id != "0"){
-          addNode(node)
-        }
-      })
+      // newNodes2.map((node3) => {
+      //   if(node3.id != "0"){
+      //     addNode(node3)
+      //   }
+      // })
     
       console.log('Set Nodes1:', newNodes); 
-      console.log('Set Nodes2:', newNodes2); 
+      //console.log('Set Nodes2:', newNodes2); 
 
       const edges = newDataset.map((node) => ({
         
@@ -222,7 +227,7 @@ const onNodeClick = (event: any,node: any) => {
   console.log("Node Click Called")
   console.log(node)
   //setOpenSideDrawer(true)
-  navigate("/recipe")
+  //navigate("/coderecipe")
 }
 
 const handleRun = () => {
