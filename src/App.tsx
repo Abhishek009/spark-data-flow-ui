@@ -7,7 +7,7 @@ import Dashboard from './pages/dashboard/dashboard';
 import Jobs from './pages/jobs/jobs';
 import Flow from './pages/flow/flow';
 import CodeRecipe from './pages/recipe/coderecipe';
-import DataRecipe from './pages/recipe/coderecipe';
+import DataRecipe from './pages/recipe/datarecipe';
 
 function App() {
   return (

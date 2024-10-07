@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ReactFlow, useNodesState, useEdgesState, Handle } from '@xyflow/react';
+import { ReactFlow, useNodesState, useEdgesState, Handle,Node } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import Button from '@mui/material/Button';
 import './UpdateNode.css';
@@ -152,22 +152,10 @@ const fetchInputNames = async () => {
       }));
       setNodes((nds) => [...nds, ...newNodes]);
       
-      
-      // const newNodes2 = newDataset.map((node2) => ({
-      //   id:   node2.outputDatasetId.toString(),
-      //   type: 'default',
-      //   data: { label: node2.datasetType , nodeType: node2.outputDatasetName },
-      //   position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
-      // }));
-
-      // newNodes2.map((node3) => {
-      //   if(node3.id != "0"){
-      //     addNode(node3)
-      //   }
-      // })
+ 
     
       console.log('Set Nodes1:', newNodes); 
-      //console.log('Set Nodes2:', newNodes2); 
+
 
       const edges = newDataset.map((node) => ({
         
@@ -214,7 +202,7 @@ const fetchInputNames = async () => {
       });
 
       handleCloseSparkSql();
-      navigate("/recipe")
+      navigate("/coderecipe")
     } catch (error) {
       setError('Error saving data');
       console.error('Error saving data:', error);
@@ -223,11 +211,17 @@ const fetchInputNames = async () => {
     }
   };
 
-const onNodeClick = (event: any,node: any) => {
+const onNodeClick = (event: React.MouseEvent, node: Node) => {
   console.log("Node Click Called")
-  console.log(node)
+  console.log(node.data.nodeType)
   //setOpenSideDrawer(true)
-  //navigate("/coderecipe")
+  if(node.data.nodeType === 'input'){
+    navigate("/datarecipe")
+  }
+  if(node.data.nodeType === 'output'){
+    navigate("/coderecipe")
+  }
+  
 }
 
 const handleRun = () => {
