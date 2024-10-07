@@ -14,7 +14,7 @@ const config: AxiosRequestConfig = {
   };
 
 
-export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String ): Promise<DataSet> => {
+export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String,datasetType:String ): Promise<DataSet> => {
 
     // const config: AxiosRequestConfig = {
     //     headers: {
@@ -28,7 +28,8 @@ export const saveInputData =  async(inputDataSetName:String,inputSourceType:Stri
             "sourceType": inputSourceType,
             "schemaName": inputSchemaName,
             "tableName": inputTableName,
-            "directoryFileLocation": inputFileLocation
+            "directoryFileLocation": inputFileLocation,
+            "datasetType": datasetType
         };
         const response = await client.put("/addinputdataset",data,config)
         return response.data;

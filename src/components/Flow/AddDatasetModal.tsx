@@ -10,7 +10,8 @@ interface AddDatasetModalProps {
         sourceType: string,
         schemaName: string,
         tableName: string,
-        fileLocation: string
+        fileLocation: string,
+        datasetType:string
       ) => void; // Add this prop to fetch updated datasets
 }
 
@@ -18,21 +19,14 @@ interface AddDatasetModalProps {
 
 const AddDatasetModal: React.FC<AddDatasetModalProps> = ({ open, handleClose, handleAddDataset   }) => {
     const [datasetName, setDatasetName] = useState('');
-    const [datasetType, setDatasetType] = useState('');
+    const [sourceType, setSourceType] = useState('');
     const [schemaName, setSchemaName] = useState('');
     const [tableName, setTableName] = useState('');
     const [fileLocation, setFileLocation] = useState('');
 
     const handleSubmit = async () =>  {
-        // const newDataset = await saveInputData(datasetName,datasetType,schemaName,tableName,fileLocation)
-        
-        // addNode({
-        //     id: newDataset.id,
-        //     data: { label: newDataset.dataSetName },
-        //     position: { x: Math.random() * 400, y: Math.random() * 400 }, // Random position for example
-        // });
-        // handleClose();
-        handleAddDataset(datasetName, datasetType, schemaName, tableName, fileLocation);
+        console.log("Sending data to handleSubmit function",datasetName+"=="+sourceType+"=="+schemaName+"=="+tableName+"=="+fileLocation+"=="+"input")
+        handleAddDataset(datasetName, sourceType, schemaName, tableName, fileLocation,"input");
         
     };
 
@@ -76,11 +70,11 @@ const AddDatasetModal: React.FC<AddDatasetModalProps> = ({ open, handleClose, ha
                     required
                     fullWidth
                     select
-                    id="datasetType"
+                    id="sourceType"
                     label="Dataset Type"
-                    name="datasetType"
-                    value={datasetType}
-                    onChange={(e) => setDatasetType(e.target.value)}
+                    name="sourceType"
+                    value={sourceType}
+                    onChange={(e) => setSourceType(e.target.value)}
                 >
                     <MenuItem value="hive">Hive</MenuItem>
                     <MenuItem value="file">File</MenuItem>

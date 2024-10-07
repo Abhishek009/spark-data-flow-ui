@@ -1,10 +1,11 @@
 export  type DataSet = {
     id: string;
     dataSetName: string,
-    dataSetType: string,
+    sourceType: string,
     schemaName: string,
     tableName: string,
-    directoryFileLocation:string;
+    directoryFileLocation:string,
+    datatsetType: String
 };
 
 export type AllTransData = {
@@ -39,4 +40,5 @@ export type AllTransData = {
     inputDatasetName: string;
     outputDatasetId: string;
     outputDatasetName: string;
+    datatsetType: String
   }

@@ -80,7 +80,7 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
         setLoading(true);
         setError(null);
         try {
-            const response = await saveInputData(outputDataset, format, schemaName, tableName, "");
+            const response = await saveInputData(outputDataset, format, schemaName, tableName, "", "output");
             console.log("==================",response)
             let inputOutputData:SparkSqlInputData = {
             id: response.id,

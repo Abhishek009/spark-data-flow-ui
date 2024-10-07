@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Navigate, useNavigate } from 'react-router-dom';
 
-const pages = ['Home', 'Jobs'];
+//const pages = ['Home', 'Jobs','Recipe'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const NavBar = () => {
@@ -48,6 +48,9 @@ navigate("/jobs")
     navigate("/dashboard")
       }
 
+      const handleRecipeNavMenu = (event: React.MouseEvent<HTMLElement>) =>{
+        navigate("/recipe")
+          }
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -157,6 +160,13 @@ navigate("/jobs")
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 Flow
+              </Button>
+              <Button
+                key="recipe"
+                onClick={handleRecipeNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Recipe
               </Button>
           </Box>
           <Box sx={{ flexGrow: 0 }}>

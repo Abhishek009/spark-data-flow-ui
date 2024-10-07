@@ -9,6 +9,7 @@ import { saveInputData , fetchInputData,saveSparkSqlInputData } from '../../api/
 import SparkSqlModal from './SparkSqlModalProp';
 import { SparkSqlInputData,FlowMapping } from '../../api/DataModels';
 import SideDrawer from './SideDrawer';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 const getNodeId = () => `${String(+new Date()).slice(6)}`;
@@ -32,6 +33,8 @@ const getNodeId = () => `${String(+new Date()).slice(6)}`;
 const defaultViewport = { x: 0, y: 0, zoom: .5 };
 
 const UpdateNode = () => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openAddDataset, setOpenAddDataset] = useState(false);
@@ -100,20 +103,24 @@ const fetchInputNames = async () => {
     sourceType: string,
     schemaName: string,
     tableName: string,
-    fileLocation: string
+    fileLocation: string,
+    datasetType:String
   ) => {
     try {
-      await saveInputData(datasetName, sourceType, schemaName, tableName, fileLocation);
+      await saveInputData(datasetName, sourceType, schemaName, tableName, fileLocation,datasetType);
+      console.log("Adding dataset ",datasetName+"=="+sourceType+"=="+schemaName+"=="+tableName+"=="+fileLocation+"=="+datasetType)
       const newDataset = await fetchInputData()
       
+    
         newDataset.forEach((dataset) => {
           const id = getNodeId();
-          //const backgroundColor = dataset.inputDatasetName === 'sdf_dataset_1' ? '#eee' : '#D3D3D3'; 
+          const backgroundColor = dataset.datatsetType === 'input' ? '#eee' : '#eee'; 
+          console.log(backgroundColor)
           addNode({
             id: id,
             data: { label: dataset.inputDatasetName },
             position: { x: Math.random() * 400, y: Math.random() * 400 }, // Random position for example
-           
+            style: { backgroundColor },
           });
         });
       
@@ -132,7 +139,8 @@ const fetchInputNames = async () => {
       console.log('Fetched Nodes:', newDataset); 
       
 
-      const newNodes = newDataset.map((node) => ({
+      const newNodes = newDataset.map((node) => 
+         ({
         id:   node.inputDataId.toString(),
         data: { label: node.inputDatasetName },
         position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
@@ -152,6 +160,7 @@ const fetchInputNames = async () => {
           addNode(node)
         }
       })
+    
       console.log('Set Nodes1:', newNodes); 
       console.log('Set Nodes2:', newNodes2); 
 
@@ -200,6 +209,7 @@ const fetchInputNames = async () => {
       });
 
       handleCloseSparkSql();
+      navigate("/recipe")
     } catch (error) {
       setError('Error saving data');
       console.error('Error saving data:', error);
@@ -208,11 +218,11 @@ const fetchInputNames = async () => {
     }
   };
 
-const onNodeClick = (event: React.MouseEvent<HTMLDivElement>,node: Node) => {
+const onNodeClick = (event: any,node: any) => {
   console.log("Node Click Called")
   console.log(node)
-  setOpenSideDrawer(true)
-  
+  //setOpenSideDrawer(true)
+  navigate("/recipe")
 }
 
 const handleRun = () => {
@@ -226,6 +236,8 @@ const handleRun = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeDoubleClick={onNodeClick}
+      
+      //onNodeClick={onNodeClick}
       defaultViewport={defaultViewport}
       //minZoom={0.2}
       //maxZoom={4}
