@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, Link, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { SimpleTreeView, TreeItem } from '@mui/x-tree-view';
-//import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-//import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
-//import prism from 'react-syntax-highlighter/dist/esm/styles/prism';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
@@ -14,6 +12,8 @@ import './CodeRecipe.css'
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { saveCode } from '../../api/DataApi';
+import { useLocation } from 'react-router-dom';
 
 interface Table {
     name: string;
@@ -29,10 +29,23 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
 
     const [tabIndex, setTabIndex] = useState(0);
     const [code, setCode] = useState('SELECT * FROM users WHERE id = 1;');
-
+    const location = useLocation();
+    const { nodeId,nodeName } = location.state;
+    
     const handleTabChange = (event: any, newIndex: any) => {
         setTabIndex(newIndex);
     };
+
+    const handleSubmit = async () => {
+        try {
+            console.log("Node id for the code",nodeId)
+            const response = await saveCode(code,nodeId);
+            console.log("Save Code response"+response)
+          
+        } catch (error) {
+          alert('An error occurred while saving the code.');
+        }
+      };
 
     return (
         <Box display="flex" height="100vh">
@@ -55,7 +68,10 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
                     <Tab label="Config" />
                 </Tabs>
                 </Box> */}
-
+<Breadcrumbs aria-label="breadcrumb">
+  
+  <Typography sx={{ color: 'text.primary' }}> / {nodeName}</Typography>
+</Breadcrumbs>
                 <Tabs value={tabIndex} onChange={handleTabChange} >
                     <Tab label="Code" />
                     <Tab label="Config" />
@@ -84,8 +100,8 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
                             className="CodeMirror"
                         />
                         <Box marginTop={2}>
-                            <Button variant="contained" color="primary">
-                                Run
+                            <Button variant="contained" color="success" onClick={handleSubmit}>
+                                Save & Run
                             </Button>
                         </Box>
                     </Box>

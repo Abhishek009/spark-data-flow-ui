@@ -14,7 +14,7 @@ const config: AxiosRequestConfig = {
   };
 
 
-export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String,datasetType:String ): Promise<DataSet> => {
+export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String,datasetType:String,code:String ): Promise<DataSet> => {
 
     // const config: AxiosRequestConfig = {
     //     headers: {
@@ -29,7 +29,8 @@ export const saveInputData =  async(inputDataSetName:String,inputSourceType:Stri
             "schemaName": inputSchemaName,
             "tableName": inputTableName,
             "directoryFileLocation": inputFileLocation,
-            "datasetType": datasetType
+            "datasetType": datasetType,
+            "code":code
         };
         const response = await client.put("/addinputdataset",data,config)
         return response.data;
@@ -86,6 +87,24 @@ export const fetchInputData =  async(): Promise<FlowMapping[]> => {
     }
 };
 
+export const saveCode =  async(code:String,nodeid:String): Promise<string> => {
+    try{
+
+        const data = {
+            "code": code,
+            "nodeid": nodeid,
+        
+        };
+        console.log("Data send "+data.code+"->"+data.nodeid)
+        const response = await client.post("/savecode",data,config)
+        console.log("Code Saved succesfully "+response.statusText)
+        return response.statusText
+        
+    }catch(error) {
+        console.error('Error in saving interface',error);
+        throw error;
+    }
+};
 
 // export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String ): Promise<void> => {
 

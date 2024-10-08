@@ -22,7 +22,7 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
     const [inputNames, setInputNames] = useState<FlowMapping[]>([]);
     // const [selectedInputName, setSelectedInputName] = useState('');
     const [selectedInputNames, setSelectedInputNames] = useState<string[]>(['']);
-    const [selectedInputId, setSelectedInputId] = useState<string[]>(['']);
+    //const [selectedInputId, setSelectedInputId] = useState<string[]>(['']);
     const [outputDataset, setOutputDataset] = useState('');
     const [format, setFormat] = useState('');
     const [tableName, setTableName] = useState('');
@@ -80,15 +80,32 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
         setLoading(true);
         setError(null);
         try {
-            const response = await saveInputData(outputDataset, format, schemaName, tableName, "", "output");
+            console.log("computeNode==================",selectedInputNames)
+            let a="compute"
+            
+            console.log("computeNode==================","compute_"+selectedInputNames.toString().replaceAll(',','_')+"_"+outputDataset)
+            const responseCompute = await saveInputData("compute_"+selectedInputNames.toString().replaceAll(',','_')+"_"+outputDataset, "", "", "", "", "compute","");
+            const response = await saveInputData(outputDataset, format, schemaName, tableName, "", "output","");
             console.log("==================",response)
-            let inputOutputData:SparkSqlInputData = {
-            id: response.id,
+            console.log("==================",responseCompute)
+
+            let inputOutputDataCompute:SparkSqlInputData = {
+            id: responseCompute.id,
             selectedInputNames:selectedInputNames,
-            outputDataset:outputDataset,
+            outputDataset:"compute_"+selectedInputNames.toString().replaceAll(',','_')+"_"+outputDataset,
             format:format,
             tableName:tableName,
             schemaName:schemaName};
+
+            let inputOutputData:SparkSqlInputData = {
+                id: response.id,
+                selectedInputNames:[responseCompute.id],
+                outputDataset:outputDataset,
+                format:format,
+                tableName:tableName,
+                schemaName:schemaName};
+
+            handleSubmit(inputOutputDataCompute)
             handleSubmit(inputOutputData)
             
             

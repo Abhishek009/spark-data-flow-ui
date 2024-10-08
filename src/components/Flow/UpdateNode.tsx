@@ -109,7 +109,7 @@ const fetchInputNames = async () => {
     datasetType:String
   ) => {
     try {
-      await saveInputData(datasetName, sourceType, schemaName, tableName, fileLocation,datasetType);
+      await saveInputData(datasetName, sourceType, schemaName, tableName, fileLocation,datasetType,"");
       console.log("Adding dataset ",datasetName+"=="+sourceType+"=="+schemaName+"=="+tableName+"=="+fileLocation+"=="+datasetType)
       const newDataset = await fetchInputData()
       
@@ -212,14 +212,15 @@ const fetchInputNames = async () => {
   };
 
 const onNodeClick = (event: React.MouseEvent, node: Node) => {
-  console.log("Node Click Called")
-  console.log(node.data.nodeType)
+  console.log("Node Click Called",node)
+  console.log("node.data.nodeType",node.data.nodeType)
+  
   //setOpenSideDrawer(true)
-  if(node.data.nodeType === 'input'){
+  if(node.data.nodeType === 'input' || node.data.nodeType === 'output'){
     navigate("/datarecipe")
   }
-  if(node.data.nodeType === 'output'){
-    navigate("/coderecipe")
+  if(node.data.nodeType === 'compute'){
+    navigate("/coderecipe",{ state: {id : node.id, nodeName: node.data.label }})
   }
   
 }
