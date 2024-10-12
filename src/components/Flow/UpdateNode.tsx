@@ -56,14 +56,14 @@ const UpdateNode = () => {
 
 
 
-  const handleDrawerClose = () => {
-    console.log("Close is called")
-    setOpenSideDrawer(false);
-  };
+  // const handleDrawerClose = () => {
+  //   console.log("Close is called")
+  //   setOpenSideDrawer(false);
+  // };
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [nodeBg, setNodeBg] = useState('#eee');
+  //const [nodeBg, setNodeBg] = useState('#eee');
 
 
 const addNode = (node: any) => {
@@ -138,25 +138,19 @@ const fetchInputNames = async () => {
   const fetchDatasets = async () => {
     try {
       console.log("in fetch dataset")
-      const newDataset = await fetchInputData() // Replace with your API endpoint
+      const newDataset = await fetchInputData() 
       console.log('Fetched Nodes:', newDataset); 
       
-
       const newNodes = newDataset.map((node1) => 
          ({
         id:   node1.inputDataId.toString(),
         type: 'default',
         data: { label: node1.inputDatasetName , nodeType: node1.datasetType },
-        position: { x: Math.random() * 400, y: Math.random() * 400 }, // Adjust position as needed
+        position: { x: Math.random() * 400, y: Math.random() * 400 }, 
         
       }));
-      setNodes((nds) => [...nds, ...newNodes]);
-      
- 
-    
+      setNodes((nds) => [...nds, ...newNodes]);     
       console.log('Set Nodes1:', newNodes); 
-
-
       const edges = newDataset.map((node) => ({
         
         id : `e${node.inputDataId}->${node.outputDatasetId}`,
@@ -202,7 +196,7 @@ const fetchInputNames = async () => {
       });
 
       handleCloseSparkSql();
-      navigate("/coderecipe")
+      navigate("/coderecipe",{state: { nodeId:data.id,nodeName: data.outputDataset }})
     } catch (error) {
       setError('Error saving data');
       console.error('Error saving data:', error);
@@ -212,15 +206,15 @@ const fetchInputNames = async () => {
   };
 
 const onNodeClick = (event: React.MouseEvent, node: Node) => {
-  console.log("Node Click Called",node)
-  console.log("node.data.nodeType",node.data.nodeType)
-  
-  //setOpenSideDrawer(true)
+  console.log("Node Click Called ",node)
+  console.log("node.data.nodeType ",node.data.nodeType)
+  console.log("node.data.id ",node.id)
+
   if(node.data.nodeType === 'input' || node.data.nodeType === 'output'){
     navigate("/datarecipe")
   }
   if(node.data.nodeType === 'compute'){
-    navigate("/coderecipe",{ state: {id : node.id, nodeName: node.data.label }})
+    navigate("/coderecipe",{ state: {nodeId : node.id, nodeName: node.data.label }})
   }
   
 }
@@ -286,7 +280,7 @@ const handleRun = () => {
             <AddDatasetModal open={openAddDataset} handleClose={handleCloseAddDataset} handleAddDataset={handleAddDataset} />
             <SparkSqlModal open={openSparkSql} handleClose={handleCloseSparkSql} handleSubmit={handleSparkSqlSubmit} inputNamesForSparkSql={inputNames} 
             distinctOutputNamesForSparkSql={distinctOutputNames}/>
-            <SideDrawer open={openSideDrawer} onClose={handleDrawerClose}/>
+            
         </Box>
       </div>
     </ReactFlow>

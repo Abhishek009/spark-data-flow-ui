@@ -16,12 +16,6 @@ const config: AxiosRequestConfig = {
 
 export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String,datasetType:String,code:String ): Promise<DataSet> => {
 
-    // const config: AxiosRequestConfig = {
-    //     headers: {
-    //       'Accept': 'application/json',
-    //     } as RawAxiosRequestHeaders,
-    //   };
-
     try{
         const data = {
             "dataSetName": inputDataSetName,
@@ -87,7 +81,7 @@ export const fetchInputData =  async(): Promise<FlowMapping[]> => {
     }
 };
 
-export const saveCode =  async(code:String,nodeid:String): Promise<string> => {
+export const saveCodeForNode =  async(code:String,nodeid:String): Promise<string> => {
     try{
 
         const data = {
@@ -106,26 +100,20 @@ export const saveCode =  async(code:String,nodeid:String): Promise<string> => {
     }
 };
 
-// export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String ): Promise<void> => {
 
-//     const config: AxiosRequestConfig = {
-//         headers: {
-//           'Accept': 'application/json',
-//         } as RawAxiosRequestHeaders,
-//       };
+export const getCodeForNode =  async(nodeid:String): Promise<string> => {
+    try{
 
-//     try{
-//         const data = {
-//             "dataSetName": inputDataSetName,
-//             "sourceType": inputSourceType,
-//             "schemaName": inputSchemaName,
-//             "tableName": inputTableName,
-//             "directoryFileLocation": inputFileLocation
-//         };
-//         const response = await client.put("/addUser",data,config)
-//         const { datasetName, datasetType, schemaName, tableName } = response.body;
-//     }catch(error) {
-//         console.error('Error in saving interface',error);
-//         throw error;
-//     }
-// };
+        const data = {
+            "nodeid": nodeid,
+        };
+        console.log("GetCodeForNode -> "+data.nodeid)
+        const response = await client.post("/getcode",data,config)
+        console.log("Code got "+response.data)
+        return response.data
+        
+    }catch(error) {
+        console.error('Error in saving interface',error);
+        throw error;
+    }
+};
