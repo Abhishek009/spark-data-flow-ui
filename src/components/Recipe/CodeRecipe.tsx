@@ -28,8 +28,8 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
 
     const [tabIndex, setTabIndex] = useState(0);
     const [code, setCode] = useState('');
-    const location = useLocation();
     const [nodeid, setNodeId] = useState('');
+    const location = useLocation();
     const { nodeId, nodeName } = location.state;
     const [openSnackBar, setOpenSnackBar] = useState<boolean>(false)
     const [snackBarMsg, setSnackBarMsg] = useState<string>('')
@@ -60,7 +60,8 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
     const saveCode = async () => {
         try {
             console.log("Node id for the code", nodeId)
-            const response = await saveCodeForNode(code, nodeId);
+            console.log("code", code)
+            const response = await saveCodeForNode(code, nodeId.toString());
             console.log("Save Code response" + response)
             setCode(code)
             setNodeId(nodeId.toString())
@@ -74,12 +75,17 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
         }
     }
 
-    const handleSaveButton = () => {
-        saveCode()
-    };
+    const getInputOutputNode = async () => {
+        // code to get data node and  its input and output in performend here
+    }
+
+    const handleSaveButton = async () => {
+            saveCode()
+        };
 
     const handleRunButton = async () => {
         saveCode()
+        getInputOutputNode()
         console.log({code})
         alert("Work under progress")
     }
