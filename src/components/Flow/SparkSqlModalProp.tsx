@@ -84,8 +84,10 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
             let a="compute"
             
             console.log("computeNode==================","compute_"+selectedInputNames.toString().replaceAll(',','_')+"_"+outputDataset)
-            const responseCompute = await saveInputData("compute_"+selectedInputNames.toString().replaceAll(',','_')+"_"+outputDataset, "", "", "", "", "compute","");
-            const response = await saveInputData(outputDataset, format, schemaName, tableName, "", "output","");
+            // Entry in input_modal
+            const responseCompute = await saveInputData("compute_"+selectedInputNames.toString().replaceAll(',','_')+"_"+outputDataset, "", "", "", "", "compute","","");
+            // Entry in input_modal
+            const response = await saveInputData(outputDataset, "hive", schemaName, tableName, "", "output","",format);
             console.log("==================",response)
             console.log("==================",responseCompute)
 
@@ -93,15 +95,17 @@ const SparkSqlModal: React.FC<SparkSqlModalProps> = ({ open, handleClose,handleS
             id: responseCompute.id,
             selectedInputNames:selectedInputNames,
             outputDataset:"compute_"+selectedInputNames.toString().replaceAll(',','_')+"_"+outputDataset,
-            format:format,
-            tableName:tableName,
-            schemaName:schemaName};
+            sourceType: "NA",
+            format:"compute",
+            tableName:"NA",
+            schemaName:"NA"};
 
             let inputOutputData:SparkSqlInputData = {
                 id: response.id,
                 selectedInputNames:[responseCompute.id],
                 outputDataset:outputDataset,
-                format:format,
+                sourceType: format,
+                format: "hive",
                 tableName:tableName,
                 schemaName:schemaName};
 

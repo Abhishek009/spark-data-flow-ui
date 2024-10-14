@@ -109,7 +109,7 @@ const fetchInputNames = async () => {
     datasetType:String
   ) => {
     try {
-      await saveInputData(datasetName, sourceType, schemaName, tableName, fileLocation,datasetType,"");
+      await saveInputData(datasetName, sourceType, schemaName, tableName, fileLocation,datasetType,"","");
       console.log("Adding dataset ",datasetName+"=="+sourceType+"=="+schemaName+"=="+tableName+"=="+fileLocation+"=="+datasetType)
       const newDataset = await fetchInputData()
       
@@ -141,6 +141,7 @@ const fetchInputNames = async () => {
       const newDataset = await fetchInputData() 
       console.log('Fetched Nodes:', newDataset); 
       
+
       const newNodes = newDataset.map((node1) => 
          ({
         id:   node1.inputDataId.toString(),
@@ -149,8 +150,13 @@ const fetchInputNames = async () => {
         position: { x: Math.random() * 400, y: Math.random() * 400 }, 
         
       }));
-      setNodes((nds) => [...nds, ...newNodes]);     
+      setNodes((nds) => [...nds, ...newNodes]); 
+      
+      
+
       console.log('Set Nodes1:', newNodes); 
+
+
       const edges = newDataset.map((node) => ({
         
         id : `e${node.inputDataId}->${node.outputDatasetId}`,
@@ -196,7 +202,10 @@ const fetchInputNames = async () => {
       });
 
       handleCloseSparkSql();
-      navigate("/coderecipe",{state: { nodeId:data.id,nodeName: data.outputDataset }})
+      if(data.outputDataset.match("compute")){
+        navigate("/coderecipe",{state: { nodeId:data.id,nodeName: data.outputDataset }})
+      }
+      
     } catch (error) {
       setError('Error saving data');
       console.error('Error saving data:', error);
@@ -209,6 +218,10 @@ const onNodeClick = (event: React.MouseEvent, node: Node) => {
   console.log("Node Click Called ",node)
   console.log("node.data.nodeType ",node.data.nodeType)
   console.log("node.data.id ",node.id)
+  const parentNode = nodes.find(n => n.id === node.parentId);
+  if (parentNode) {
+    console.log("Parent node info:", parentNode);
+  }
 
   if(node.data.nodeType === 'input' || node.data.nodeType === 'output'){
     navigate("/datarecipe")

@@ -29,6 +29,7 @@ export type AllTransData = {
     id:string;
     selectedInputNames: string[];
     outputDataset: string;
+    sourceType: string;
     format: string;
     tableName: string;
     schemaName: string;

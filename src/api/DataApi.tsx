@@ -14,12 +14,13 @@ const config: AxiosRequestConfig = {
   };
 
 
-export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String,datasetType:String,code:String ): Promise<DataSet> => {
+export const saveInputData =  async(inputDataSetName:String,inputSourceType:String,inputSchemaName:String,inputTableName:String,inputFileLocation:String,datasetType:String,code:String,sourceFormat:String ): Promise<DataSet> => {
 
     try{
         const data = {
             "dataSetName": inputDataSetName,
-            "sourceType": inputSourceType,
+            "sourceType": inputSourceType ,
+            "sourceFormat": sourceFormat,
             "schemaName": inputSchemaName,
             "tableName": inputTableName,
             "directoryFileLocation": inputFileLocation,
