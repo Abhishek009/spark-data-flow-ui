@@ -121,3 +121,20 @@ export const getCodeForNode =  async(nodeid:String): Promise<string> => {
         throw error;
     }
 };
+
+export const generateMappingForExecution =  async(nodeid:String): Promise<string> => {
+    try{
+
+        const data = {
+            "nodeid": nodeid,
+        };
+        console.log("GetCodeForNode -> "+data.nodeid)
+        const response = await client.post("/buildexecuteconfig",data,config)
+        console.log("Code got "+response.data)
+        return response.data
+        
+    }catch(error) {
+        console.error('Error in saving interface',error);
+        throw error;
+    }
+};

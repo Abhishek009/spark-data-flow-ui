@@ -10,7 +10,7 @@ import 'codemirror/mode/sql/sql';
 import './CodeRecipe.css'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { getCodeForNode, saveCodeForNode } from '../../api/DataApi';
+import { getCodeForNode, saveCodeForNode, generateMappingForExecution } from '../../api/DataApi';
 import { useLocation } from 'react-router-dom';
 import CommonSnackbar from '../Snackbar/CommonSnackbar';
 
@@ -76,7 +76,9 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
     }
 
     const getInputOutputNode = async () => {
-        // code to get data node and  its input and output in performend here
+            console.log("Node id for the code", nodeId)
+            console.log("code", code)
+            const response = await generateMappingForExecution(nodeId.toString());
     }
 
     const handleSaveButton = async () => {
