@@ -89,7 +89,7 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
         saveCode()
         getInputOutputNode()
         console.log({code})
-        alert("Work under progress")
+        
     }
     return (
         <Box display="flex" height="100vh">
