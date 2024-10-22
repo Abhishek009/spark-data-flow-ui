@@ -183,10 +183,11 @@ const UpdateNode = () => {
           addEdge(node)
         }
       })
-
+      setLoading(false);
       //setEdges((eds) => [...eds,...edges])
 
     } catch (error) {
+      setLoading(true);
       console.error('Error fetching data:', error);
     }
   };
