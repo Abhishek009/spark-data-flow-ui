@@ -203,95 +203,95 @@
 
 // export default InputForm;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+// import org.springframework.context.annotation.Configuration;
+// import org.springframework.web.socket.config.annotation.EnableWebSocket;
+// import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+// import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-@Configuration
-@EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new SparkLogWebSocketHandler(), "/spark-logs").setAllowedOrigins("*");
-    }
-}
+// @Configuration
+// @EnableWebSocket
+// public class WebSocketConfig implements WebSocketConfigurer {
+//     @Override
+//     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+//         registry.addHandler(new SparkLogWebSocketHandler(), "/spark-logs").setAllowedOrigins("*");
+//     }
+// }
 
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
+// import org.springframework.web.socket.TextMessage;
+// import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-public class SparkLogWebSocketHandler extends TextWebSocketHandler {
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        // Fetch logs from Spark History Server
-        String logs = fetchLogsFromHistoryServer();
-        session.sendMessage(new TextMessage(logs));
-    }
+// public class SparkLogWebSocketHandler extends TextWebSocketHandler {
+//     @Override
+//     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+//         // Fetch logs from Spark History Server
+//         String logs = fetchLogsFromHistoryServer();
+//         session.sendMessage(new TextMessage(logs));
+//     }
 
-    private String fetchLogsFromHistoryServer() {
-        // Implement logic to fetch logs from Spark History Server
-        return "Sample Spark Logs";
-    }
-}
+//     private String fetchLogsFromHistoryServer() {
+//         // Implement logic to fetch logs from Spark History Server
+//         return "Sample Spark Logs";
+//     }
+// }
 
 
-Connect to WebSocket in React:
-import React, { useEffect, useState } from 'react';
+// Connect to WebSocket in React:
+// import React, { useEffect, useState } from 'react';
 
-const SparkLogViewer: React.FC = () => {
-    const [logs, setLogs] = useState('');
+// const SparkLogViewer: React.FC = () => {
+//     const [logs, setLogs] = useState('');
 
-    useEffect(() => {
-        const socket = new WebSocket('ws://localhost:8080/spark-logs');
+//     useEffect(() => {
+//         const socket = new WebSocket('ws://localhost:8080/spark-logs');
 
-        socket.onmessage = (event) => {
-            setLogs(event.data);
-        };
+//         socket.onmessage = (event) => {
+//             setLogs(event.data);
+//         };
 
-        return () => {
-            socket.close();
-        };
-    }, []);
+//         return () => {
+//             socket.close();
+//         };
+//     }, []);
 
-    return (
-        <div>
-            <h1>Spark Logs</h1>
-            <pre>{logs}</pre>
-        </div>
-    );
-};
+//     return (
+//         <div>
+//             <h1>Spark Logs</h1>
+//             <pre>{logs}</pre>
+//         </div>
+//     );
+// };
 
-export default SparkLogViewer;
+// export default SparkLogViewer;
 
-Using Polling
-Update Spring Boot to Provide Logs:
+// Using Polling
+// Update Spring Boot to Provide Logs:
 
-The same as before, but the /spark-logs endpoint can provide partial logs as needed.
+// The same as before, but the /spark-logs endpoint can provide partial logs as needed.
 
-Polling in React:
-import React, { useEffect, useState } from 'react';
+// Polling in React:
+// import React, { useEffect, useState } from 'react';
 
-const SparkLogViewer: React.FC = () => {
-    const [logs, setLogs] = useState('');
+// const SparkLogViewer: React.FC = () => {
+//     const [logs, setLogs] = useState('');
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            fetch('/spark-logs')
-                .then(response => response.text())
-                .then(data => setLogs(data));
-        }, 5000); // Polling every 5 seconds
+//     useEffect(() => {
+//         const intervalId = setInterval(() => {
+//             fetch('/spark-logs')
+//                 .then(response => response.text())
+//                 .then(data => setLogs(data));
+//         }, 5000); // Polling every 5 seconds
 
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, []);
+//         return () => {
+//             clearInterval(intervalId);
+//         };
+//     }, []);
 
-    return (
-        <div>
-            <h1>Spark Logs</h1>
-            <pre>{logs}</pre>
-        </div>
-    );
-};
+//     return (
+//         <div>
+//             <h1>Spark Logs</h1>
+//             <pre>{logs}</pre>
+//         </div>
+//     );
+// };
 
-export default SparkLogViewer;
+// export default SparkLogViewer;

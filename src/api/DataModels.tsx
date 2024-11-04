@@ -8,6 +8,9 @@ export  type DataSet = {
     datatsetType: String
 };
 
+export type Login = {
+  token:string
+}
 export type AllTransData = {
     id:string
     transDataSetName:string;

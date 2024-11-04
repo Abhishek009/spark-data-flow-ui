@@ -1,6 +1,6 @@
 
 
-import { DataSet, AllDataInput,SparkSqlInputData,FlowMapping } from './DataModels'
+import { DataSet, AllDataInput,SparkSqlInputData,FlowMapping,Login } from './DataModels'
 import axios, { AxiosResponse, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 
 const client = axios.create({
@@ -101,9 +101,20 @@ export const saveCodeForNode =  async(code:String,nodeid:String): Promise<string
     }
 };
 
-// export const getInputOutputForNodeId = async(nodeid:String): Promise<String>=> {
+export const getLog = async(userId:String): Promise<any>=> {
+try{
+    const data = {
+        "userId": userId
+    };
+    const response = await client.get(`/log/${userId}`,config)
+    return response.data;
+}catch(error) {
+        console.error('Error in saving interface',error);
+        throw error;
+    }
+    
 
-// }
+ }
 
 export const getCodeForNode =  async(nodeid:String): Promise<string> => {
     try{
@@ -121,6 +132,21 @@ export const getCodeForNode =  async(nodeid:String): Promise<string> => {
         throw error;
     }
 };
+
+export const loginUser = async(userId:string,password: string): Promise<Login> => {
+try{
+    const data = {
+        "userId": userId,
+        "password": password,
+    };
+ const response = await client.post("/login",data,config)
+ console.error("==========",response.data)
+ return response.data;
+}catch(error) {
+    console.error("Error logging user:",error)
+    throw error;
+}
+}
 
 export const generateMappingForExecution =  async(nodeid:String): Promise<string> => {
     try{

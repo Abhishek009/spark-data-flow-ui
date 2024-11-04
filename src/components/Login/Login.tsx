@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Box, TextField, Button, Typography, Link, FormControlLabel, Checkbox } from '@mui/material';
 import Grid from '@mui/material';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { loginUser } from '../../api/DataApi';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
+    const [userId,setUserId] = useState('');
+    const [password,setPassword] = useState('');
+    const [errorMessage,setErrorMessage] = useState('');
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        navigate("/dashboard")
+        
+        try {
+            const fetchData = await loginUser(userId,password)
+            console.log("token",fetchData.token)
+            localStorage.setItem('user',userId)
+            localStorage.setItem('token',fetchData.token)
+            navigate("/dashboard");
+        } catch(error) {
+            setErrorMessage("Invalid User")
+        }
+       
     };
 
     return (
@@ -39,6 +48,7 @@ const Login: React.FC = () => {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        onChange={(e) => setUserId(e.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -49,11 +59,16 @@ const Login: React.FC = () => {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Remember me"
                     />
+                    <Typography variant="h5" color="error">
+                    {errorMessage}
+                    </Typography>
+                    
                     <Button
                         type="submit"
                         fullWidth

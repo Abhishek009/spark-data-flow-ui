@@ -10,21 +10,22 @@ import 'codemirror/mode/sql/sql';
 import './CodeRecipe.css'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { getCodeForNode, saveCodeForNode, generateMappingForExecution } from '../../api/DataApi';
+import { getCodeForNode, saveCodeForNode, generateMappingForExecution, fetchInputData } from '../../api/DataApi';
 import { useLocation } from 'react-router-dom';
 import CommonSnackbar from '../Snackbar/CommonSnackbar';
-
-interface Table {
+import { SparkSqlInputData, FlowMapping } from '../../api/DataModels';
+import LogViewer from '../LogView/LogViewer';
+interface Tables {
     name: string;
     columns: string[];
 }
 
 interface CodeRecipeProps {
-    tables: Table[];
+    tables: Tables[];
 }
 
 
-export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
+export const CodeRecipe: React.FC<CodeRecipeProps> = () => {
 
     const [tabIndex, setTabIndex] = useState(0);
     const [code, setCode] = useState('');
@@ -34,15 +35,34 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
     const [openSnackBar, setOpenSnackBar] = useState<boolean>(false)
     const [snackBarMsg, setSnackBarMsg] = useState<string>('')
     const [snackBarMsgType, setSnackBarMsgType] = useState<AlertProps['severity']>('info')
-
+    const [tableColumn,setTableColumn] = useState<Tables[] | undefined>()
     const handleCloseSnackBar = () => setOpenSnackBar(false);
     const handleTabChange = (event: any, newIndex: any) => { setTabIndex(newIndex); };
 
     useEffect(() => {
         console.log("Inside useEffect")
         getCode()
+        fetchInputNames()
     }, []);
 
+    const fetchInputNames = async() => {
+
+        const tableData: Tables[] = [];
+        const inputNamesForSparkSql = await fetchInputData()
+        const distinctData = Array.from(new Set(inputNamesForSparkSql.map(item => item.outputDatasetId)))
+        .map(id => inputNamesForSparkSql.find(item => item.inputDataId === id)).filter((item): item is FlowMapping => item !== undefined);
+        inputNamesForSparkSql.map((name) => {if(name.outputDatasetId == nodeId) 
+        {
+            console.log("========input dataset name",name.inputDatasetName)
+            tableData.push({
+                name: name.inputDatasetName,
+                columns: ['Column1','Column2','Column3']
+            })
+            setTableColumn(tableData)
+        }
+        })
+        
+    }
 
     const getCode = useCallback(async () => {
         try {
@@ -95,7 +115,7 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
         <Box display="flex" height="100vh">
             <Box width="15%" bgcolor="#f0f0f0" padding={2}>
                 <SimpleTreeView>
-                    {tables.map((table, index) => (
+                    {tableColumn?.map((table, index) => (
                         <TreeItem itemId={`table-${index}`} label={table.name} key={index}>
                             {table.columns.map((column, colIndex) => (
                                 <TreeItem itemId={`column-${index}-${colIndex}`} label={column} key={colIndex} />
@@ -150,7 +170,7 @@ export const CodeRecipe: React.FC<CodeRecipeProps> = ({ tables }) => {
                                 </Button>
 
                             </Box>
-
+<LogViewer userId='1234567'></LogViewer>
                         </Box>
                     </Box>
                 )}
